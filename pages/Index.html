@@ -1,6 +1,7 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../css.css/estilos.css">
 </head>
+
 <body class="bg-dark text-white">
   <!-- Barra de Navegação -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-secondary">
@@ -23,7 +25,8 @@
             <form class="d-flex" onsubmit="return login(event)">
               <input id="usuario" class="form-control me-2" type="text" placeholder="Usuário" required>
               <input id="senha" class="form-control me-2" type="password" placeholder="Senha" required>
-              <button class="btn btn-outline-light" type="submit">Login</button>
+              <button class="btn btn-outline-light" type="submit"
+                onclick="window.location.href='login.html'; return false;">Login</button>
             </form>
           </li>
         </ul>
@@ -31,14 +34,15 @@
     </div>
   </nav>
   <!-- Conteúdo Principal de Filmes-->
-<div id="conteudoDinamico"></div>
+  <div id="conteudoDinamico"></div>
 
   <div id="conteudoPrincipal" class="container py-5">
-  <h1 class="text-center mb-4">Conteudo Principal</h1>
+    <h1 class="text-center mb-4">Conteudo Principal</h1>
     <!-- Filtro -->
     <div class="row mb-4">
       <div class="col-md-6 offset-md-3">
-        <input type="text" id="filtro" class="form-control" placeholder="Filtrar por título..." onkeyup="filtrarVideos()">
+        <input type="text" id="filtro" class="form-control" placeholder="Filtrar por título..."
+          onkeyup="filtrarVideos()">
       </div>
     </div>
 
@@ -46,9 +50,11 @@
       <!-- Os vídeos serão inseridos aqui via JS -->
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.3.1/dist/pouchdb.min.js"></script><!-- PouchDB para manipulação de dados -->
+  <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.3.1/dist/pouchdb.min.js"></script>
+  <!-- PouchDB para manipulação de dados -->
   <script src="../js.js/main.js"></script><!-- Script principal para manipulação de vídeos e autenticação -->
   <!-- É preciso importar o JS após o pouch db se não da erro não mostra os cards -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
