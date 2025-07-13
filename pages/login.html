@@ -35,6 +35,23 @@
               </div>
               <button type="submit" class="btn btn-dark w-100">Entrar</button>
             </form>
+
+            <button class="btn btn-outline-light w-100" onclick="mostrarCadastro()">Cadastrar</button>
+
+          <div id="cadastroUsuario" style="display:none;">
+            <h3 class="text-center mt-4">Cadastro de Usuário</h3>
+            <form onsubmit="return cadastrarUsuario(event)">
+              <div class="mb-3">
+                <label for="novoUsuario" class="form-label">Usuário</label>
+                <input type="text" class="form-control" id="novoUsuario" required>
+              </div>
+              <div class="mb-3">
+                <label for="novaSenha" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="novaSenha" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Cadastrar</button>
+            </form>
+          </div>
           </div>
         </div>
       </div>
