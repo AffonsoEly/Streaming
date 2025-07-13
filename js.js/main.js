@@ -25,6 +25,48 @@ async function buscarTituloYoutube(idYoutube) {
     return data.items[0].snippet.title;
   }
   return "Título não encontrado";
+}async function login(event) {
+  event.preventDefault();
+  const user = document.getElementById("usuario").value.trim();
+  const pass = document.getElementById("senha").value.trim();
+  const dbUsuarios = new PouchDB('streaming_usuarios');
+  try {
+    const usuarioDoc = await dbUsuarios.get(user);
+    if (usuarioDoc.senha === pass) {
+      alert("Login bem-sucedido!");
+      if (usuarioDoc.tipo === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "Index.html";
+      }
+    } else {
+      alert("Senha incorreta.");
+    }
+  } catch (err) {
+    alert("Usuário não encontrado.");
+    console.error("Erro ao autenticar:", err);
+  }
+}async function login(event) {
+  event.preventDefault();
+  const user = document.getElementById("usuario").value.trim();
+  const pass = document.getElementById("senha").value.trim();
+  const dbUsuarios = new PouchDB('streaming_usuarios');
+  try {
+    const usuarioDoc = await dbUsuarios.get(user);
+    if (usuarioDoc.senha === pass) {
+      alert("Login bem-sucedido!");
+      if (usuarioDoc.tipo === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "Index.html";
+      }
+    } else {
+      alert("Senha incorreta.");
+    }
+  } catch (err) {
+    alert("Usuário não encontrado.");
+    console.error("Erro ao autenticar:", err);
+  }
 }
 
 const videosIniciais = [
@@ -144,19 +186,24 @@ function filtrarVideos() {
 // Autentica o usuário com base no nome e senha fornecidos
 async function login(event) {
   event.preventDefault();
-  const user = document.getElementById("usuario").value;
-  const pass = document.getElementById("senha").value;
-  try {// Busca o usuário no banco de dados
-    const result = await db.find({ selector: { tipo: 'usuario', nome: user, senha: pass } });
-    if (result.docs.length > 0) {// Se o usuário for encontrado, redireciona para a página principal
+  const user = document.getElementById("usuario").value.trim();
+  const pass = document.getElementById("senha").value.trim();
+  const dbUsuarios = new PouchDB('streaming_usuarios');
+  try {
+    const usuarioDoc = await dbUsuarios.get(user);
+    if (usuarioDoc.senha === pass) {
       alert("Login bem-sucedido!");
-      window.location.href = "Index.html";
+      if (usuarioDoc.tipo === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "Index.html";
+      }
     } else {
-      alert("Usuário ou senha incorretos.");
+      alert("Senha incorreta.");
     }
-  } catch (err) {// Se ocorrer um erro durante a autenticação, exibe uma mensagem de erro
-    console.error("Erro ao autenticar:", err);//
-    alert("Erro no login.");
+  } catch (err) {
+    alert("Usuário não encontrado.");
+    console.error("Erro ao autenticar:", err);
   }
 }
 
@@ -196,10 +243,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
- function mostrarCadastro() {
+function mostrarCadastro() {
+  document.querySelector('form[onsubmit="return login(event)"]').style.display = 'none';
   document.getElementById('cadastroUsuario').style.display = 'block';
-  const formLogin = document.querySelector('form[onsubmit="return login(event)"]');
-  if (formLogin) formLogin.style.display = 'none';
 }
 
   async function cadastrarUsuario(event) {
