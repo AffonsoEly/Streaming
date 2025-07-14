@@ -304,3 +304,154 @@ async function listarUsuarios() {
     console.log(doc);
   });
 }
+
+async function cadastrarFilme(event) {
+  event.preventDefault();
+  const titulo = document.getElementById('novoTitulo').value.trim();
+  const categoria = document.getElementById('novaCategoria').value.trim();
+  const urlYoutube = document.getElementById('novoLink').value.trim();
+
+  // Extrai o ID do YouTube do link
+  const match = urlYoutube.match(/(?:v=|\/embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  const idYoutube = match ? match[1] : null;
+  if (!idYoutube) {
+    alert('Link do YouTube inválido!');
+    return false;
+  }
+
+  const urlEmbed = `https://www.youtube.com/embed/${idYoutube}`;
+  const db = new PouchDB('streaming_filmes');
+  const novoFilme = {
+    _id: idYoutube,
+    titulo,
+    categoria,
+    url: urlEmbed
+  };
+
+  try {
+    await db.put(novoFilme);
+    alert('Filme cadastrado com sucesso!');
+    event.target.reset();
+    listarFilmes(); // Atualiza o painel de filmes cadastrados
+  } catch (err) {
+    alert('Erro ao cadastrar filme: ' + err.message);
+  }
+}
+
+async function listarFilmes() {
+  const db = new PouchDB('streaming_filmes');
+  const container = document.getElementById('listaFilmes');
+  if (!container) return; // Garante que o elemento existe
+  container.innerHTML = '';
+  const result = await db.allDocs({ include_docs: true });
+  result.rows.forEach(({ doc }) => {
+    if (doc.url && doc.titulo) {
+      const idYoutube = doc.url.split('/embed/')[1];
+      container.innerHTML += `
+        <div class="col-md-4 col-sm-6 mb-4">
+          <div class="card h-100 video-card bg-black text-white">
+            <img src="https://img.youtube.com/vi/${idYoutube}/0.jpg" class="card-img-top" alt="${doc.titulo}">
+            <div class="card-body text-center">
+              <h5 class="card-title">${doc.titulo}</h5>
+              <p class="card-text">${doc.categoria || ''}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", listarFilmes);
+
+// Manipulação de usuários com PouchDB
+const dbUsuarios = new PouchDB('streaming_usuarios');
+
+async function listarUsuarios() {
+  const container = document.getElementById('listaUsuarios');
+  container.innerHTML = '';
+  const result = await dbUsuarios.allDocs({ include_docs: true });
+  result.rows.forEach(({ doc }) => {
+    container.innerHTML += `
+      <tr>
+        <td>${doc.usuario}</td>
+        <td>${doc.tipo}</td>
+        <td>
+          <button class="btn btn-sm btn-primary me-2" onclick="abrirModalEditarUsuario('${doc._id}')">Editar</button>
+          <button class="btn btn-sm btn-danger" onclick="excluirUsuario('${doc._id}')">Excluir</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+async function cadastrarUsuario(event) {
+  event.preventDefault();
+  const usuario = document.getElementById('novoNomeUsuario').value.trim();
+  const senha = document.getElementById('novaSenhaUsuario').value.trim();
+  const tipo = document.getElementById('novoTipoUsuario').value;
+  if (!usuario || !senha || !tipo || senha.length < 4) {
+    mostrarFeedback('Preencha todos os campos corretamente!', 'danger');
+    return false;
+  }
+  try {
+    await dbUsuarios.get(usuario);
+    mostrarFeedback('Usuário já existe!', 'warning');
+    return false;
+  } catch {
+    await dbUsuarios.put({ _id: usuario, usuario, senha, tipo });
+    mostrarFeedback('Usuário cadastrado com sucesso!', 'success');
+    event.target.reset();
+    listarUsuarios();
+  }
+}
+
+function mostrarFeedback(msg, tipo) {
+  const feedback = document.getElementById('usuarioFeedback');
+  feedback.innerHTML = `<div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+    ${msg}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>`;
+}
+
+function abrirModalEditarUsuario(id) {
+  dbUsuarios.get(id).then(doc => {
+    document.getElementById('editIdUsuario').value = doc._id;
+    document.getElementById('editNomeUsuario').value = doc.usuario;
+    document.getElementById('editSenhaUsuario').value = doc.senha;
+    document.getElementById('editTipoUsuario').value = doc.tipo;
+    new bootstrap.Modal(document.getElementById('modalEditarUsuario')).show();
+  });
+}
+
+async function salvarEdicaoUsuario(event) {
+  event.preventDefault();
+  const id = document.getElementById('editIdUsuario').value;
+  const usuario = document.getElementById('editNomeUsuario').value.trim();
+  const senha = document.getElementById('editSenhaUsuario').value.trim();
+  const tipo = document.getElementById('editTipoUsuario').value;
+  if (!usuario || !senha || !tipo || senha.length < 4) {
+    alert('Preencha todos os campos corretamente!');
+    return false;
+  }
+  const doc = await dbUsuarios.get(id);
+  doc.usuario = usuario;
+  doc.senha = senha;
+  doc.tipo = tipo;
+  await dbUsuarios.put(doc);
+  alert('Usuário editado com sucesso!');
+  bootstrap.Modal.getInstance(document.getElementById('modalEditarUsuario')).hide();
+  listarUsuarios();
+}
+
+async function excluirUsuario(id) {
+  if (confirm('Deseja realmente excluir este usuário?')) {
+    const doc = await dbUsuarios.get(id);
+    await dbUsuarios.remove(doc);
+    alert('Usuário excluído!');
+    listarUsuarios();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", listarUsuarios);
+  
