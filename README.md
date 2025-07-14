@@ -32,4 +32,23 @@ Este é um projeto de plataforma de streaming simples, desenvolvido para fins ac
 4. Use o painel admin para cadastrar filmes e usuários.
 5. Navegue pelas páginas, filtre filmes por título ou categoria e aproveite!
 
-## Estrutura de Pastas
+## Tecnologias Utilizadas
+
+- HTML5
+- CSS3 (Bootstrap 5)
+- JavaScript (ES6)
+- [PouchDB](https://pouchdb.com/) (armazenamento local)
+- Bootstrap (para layout e componentes)
+
+## Observações
+
+- O projeto é totalmente client-side.
+- O menu de categorias é dinâmico e reflete as categorias cadastradas via admin.
+- O carrossel mostra até 3 filmes aleatórios cadastrados.
+- O filtro por título e categoria funciona em conjunto.
+
+## Créditos
+
+Desenvolvido por Affonso e equipe para a disciplina de Desenvolvimento Web - ADS 3º semestre.
+
+---
