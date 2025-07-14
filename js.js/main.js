@@ -148,6 +148,62 @@ function filtrarVideos() {
     card.parentElement.style.display = titulo.includes(filtro) ? "block" : "none";
   });
 }
+
+function getFilmesDestaque(qtd = 3) {
+  const copia = [...videosIniciais];
+  const destaque = [];
+  while (destaque.length < qtd && copia.length) {
+    const idx = Math.floor(Math.random() * copia.length);
+    destaque.push(copia.splice(idx, 1)[0]);
+  }
+  return destaque;
+}
+
+function renderizarDestaque() {
+  const destaque = getFilmesDestaque();
+  const container = document.getElementById('destaqueFilmes');
+  container.innerHTML = '';
+  destaque.forEach((video, i) => {
+    container.innerHTML += `
+      <div class="carousel-item${i === 0 ? ' active' : ''}">
+        <img src="https://img.youtube.com/vi/${video._id}/0.jpg" class="d-block w-100" alt="${video.titulo}">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>${video.titulo || 'Título não encontrado'}</h5>
+          <p>${video.categoria || ''}</p>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// Renderiza grid filtrado por categoria
+function filtrarCategoria(cat) {
+  let lista = videosIniciais;
+  if (cat && cat !== 'Todos') {
+    lista = lista.filter(v => v.categoria === cat);
+  }
+  const container = document.getElementById('videoList');
+  container.innerHTML = '';
+  lista.forEach(video => {
+    container.innerHTML += `
+      <div class="col-md-4 mb-4">
+        <div class="card video-card bg-black text-white">
+          <img src="https://img.youtube.com/vi/${video._id}/0.jpg" class="card-img-top" alt="${video.titulo}">
+          <div class="card-body text-center">
+            <h5 class="card-title">${video.titulo}</h5>
+            <p class="card-text">${video.categoria}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// Inicialização
+document.addEventListener("DOMContentLoaded", () => {
+  renderizarDestaque();
+  filtrarCategoria('Todos');
+});
 // Função para autenticar usuário
 // Autentica o usuário com base no nome e senha fornecidos
 async function login(event) {
