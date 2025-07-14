@@ -177,25 +177,25 @@ function renderizarDestaque() {
 }
 
 // Renderiza grid filtrado por categoria
-function filtrarCategoria(cat) {
-  let lista = videosIniciais;
-  if (cat && cat !== 'Todos') {
-    lista = lista.filter(v => v.categoria === cat);
-  }
-  const container = document.getElementById('videoList');
-  container.innerHTML = '';
-  lista.forEach(video => {
-    container.innerHTML += `
-      <div class="col-md-4 mb-4">
-        <div class="card video-card bg-black text-white">
-          <img src="https://img.youtube.com/vi/${video._id}/0.jpg" class="card-img-top" alt="${video.titulo}">
-          <div class="card-body text-center">
-            <h5 class="card-title">${video.titulo}</h5>
-            <p class="card-text">${video.categoria}</p>
-          </div>
-        </div>
-      </div>
-    `;
+
+let categoriaAtual = 'Todos';
+function filtrarCategoria(cat, el) {
+  categoriaAtual = cat;
+  // Destaca a categoria ativa
+  document.querySelectorAll('#menuCategorias .nav-link').forEach(link => link.classList.remove('active'));
+  if (el) el.classList.add('active');
+  filtrarVideos();
+}
+
+function filtrarVideos() {
+  const filtro = document.getElementById("filtro").value.toLowerCase();
+  const cards = document.querySelectorAll(".video-card");
+  cards.forEach(card => {
+    const titulo = card.querySelector(".card-title").innerText.toLowerCase();
+    const categoria = card.querySelector(".card-text") ? card.querySelector(".card-text").innerText : '';
+    const matchTitulo = titulo.includes(filtro);
+    const matchCategoria = (categoriaAtual === 'Todos') || (categoria === categoriaAtual);
+    card.parentElement.style.display = (matchTitulo && matchCategoria) ? "block" : "none";
   });
 }
 

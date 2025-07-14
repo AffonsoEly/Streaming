@@ -35,12 +35,14 @@
   <!-- Menu de Categorias -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-secondary sticky-top">
   <div class="container-fluid">
-    <ul class="navbar-nav flex-row">
-      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Todos')">Todos</a></li>
-      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Ação')">Ação</a></li>
-      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Comédia')">Comédia</a></li>
-      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Drama')">Drama</a></li>
-      <!-- Adicione mais categorias conforme necessário -->
+    <ul class="navbar-nav flex-row" id="menuCategorias">
+      <li class="nav-item mx-2"><a class="nav-link active" href="#" onclick="filtrarCategoria('Todos', this)">Todos</a></li>
+      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Ação', this)">Ação</a></li>
+      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Comédia', this)">Comédia</a></li>
+      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Drama', this)">Drama</a></li>
+      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Terror', this)">Terror</a></li>
+      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Ficção Científica', this)">Ficção Científica</a></li>
+      <li class="nav-item mx-2"><a class="nav-link" href="#" onclick="filtrarCategoria('Animação', this)">Animação</a></li>
     </ul>
   </div>
 </nav>
