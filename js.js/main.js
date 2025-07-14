@@ -71,77 +71,43 @@ async function buscarTituloYoutube(idYoutube) {
 
 const videosIniciais = [
   {
-    _id: 'video 1',
+    _id: 'dQw4w9WgXcQ',
     url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
   },
   {
-    _id: 'video 2',
+    _id: '3JZ_D3ELwOQ',
     url: 'https://www.youtube.com/embed/3JZ_D3ELwOQ'
   },
   {
-    _id: 'video 3',
+    _id: 'L_jWHffIx5E',
     url: 'https://www.youtube.com/embed/L_jWHffIx5E'
   },
   {
-    _id: 'video 4',
+    _id: 'tgbNymZ7vqY',
     url: 'https://www.youtube.com/embed/tgbNymZ7vqY'
   },
   {
-    _id: 'video 5',
+    _id: 'e-ORhEE9VVg',
     url: 'https://www.youtube.com/embed/e-ORhEE9VVg'
   },
   {
-    _id: 'video 6',
+    _id: 'kXYiU_JCYtU',
     url: 'https://www.youtube.com/embed/kXYiU_JCYtU'
   }
 ];
-
-
-/*const videosIniciais = [
-  {
-    _id: 'video_1',
-    titulo: 'Vídeo 1',
-    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-  },
-  {
-    _id: 'video_2',
-    titulo: 'Vídeo 2',
-    url: 'https://www.youtube.com/embed/3JZ_D3ELwOQ'
-  },
-  {
-    _id: 'video_3',
-    titulo: 'Vídeo 3',
-    url: 'https://www.youtube.com/embed/L_jWHffIx5E'
-  },
-  {
-    _id: 'video_4',
-    titulo: 'Vídeo 4',
-    url: 'https://www.youtube.com/embed/tgbNymZ7vqY'
-  },
-  {
-    _id: 'video_5',
-    titulo: 'Vídeo 5',
-    url: 'https://www.youtube.com/embed/e-ORhEE9VVg'
-  },
-  {
-    _id: 'video_6',
-    titulo: 'Vídeo 6',
-    url: 'https://www.youtube.com/embed/kXYiU_JCYtU'
-  }
-];*/
-
-// Inserir vídeos se não existirem
-/*videosIniciais.forEach(video => {
-  db.get(video._id).catch(() => db.put(video));
-});*/
-
 
 // Insere vídeos com título real do YouTube
 async function alimentarVideosIniciais() {
   for (const video of videosIniciais) {
     const idYoutube = video.url.split('/embed/')[1];
     video.titulo = await buscarTituloYoutube(idYoutube);
-    await db.get(video._id).catch(() => db.put(video));
+    try {
+      const existente = await db.get(video._id);
+      existente.titulo = video.titulo; // Atualiza o título
+      await db.put(existente);
+    } catch {
+      await db.put(video); // Insere se não existe
+    }
   }
 }
 
