@@ -1,0 +1,58 @@
+Claro! Vou te explicar passo a passo, de forma bem simples e detalhada, como organizar seu código para eliminar informações repetidas e garantir que os dados de filmes e usuários sejam mostrados corretamente, sem duplicidade.
+Imagina que estamos limpando e organizando seu quarto para achar tudo fácil depois!
+
+1. Remova funções duplicadas
+O que fazer:
+Procure por funções com o mesmo nome (exemplo: duas funções login(event)).
+Apague as duplicadas e deixe só uma versão de cada função.
+Como fazer:
+No seu arquivo main.js, procure por function login(event) e deixe só uma.
+Faça o mesmo para funções de cadastro de usuário, cadastro de filme, etc.
+2. Centralize o cadastro e listagem de filmes e usuários
+O que fazer:
+Use sempre as mesmas funções para cadastrar e listar filmes e usuários.
+Não crie funções novas para a mesma coisa em outros arquivos.
+Como fazer:
+Para filmes, use só cadastrarFilme(event) e listarFilmes().
+Para usuários, use só cadastrarUsuario(event) e listarUsuarios().
+3. Garanta que só uma função está mostrando os filmes na tela
+O que fazer:
+Use só a função listarFilmes() para mostrar os filmes na tela.
+Não use outras funções que também mostram filmes, como carregarVideos() ou duplicatas.
+Como fazer:
+Apague ou comente funções que fazem a mesma coisa.
+No HTML, o container dos filmes deve ter o mesmo ID (videoList ou listaFilmes).
+4. Garanta que só uma função está mostrando os usuários na tela
+O que fazer:
+Use só a função listarUsuarios() para mostrar os usuários na tela.
+Como fazer:
+Apague ou comente funções duplicadas.
+No HTML, o container dos usuários deve ter o mesmo ID (listaUsuarios).
+5. Remova listeners duplicados do DOM
+O que fazer:
+Não coloque vários document.addEventListener("DOMContentLoaded", ...) para a mesma coisa.
+Como fazer:
+Deixe só um para cada ação (um para listar filmes, um para listar usuários, etc).
+6. Garanta que os dados do banco não estão sendo inseridos duas vezes
+O que fazer:
+Se você tem funções que alimentam dados iniciais (tipo alimentarVideosIniciais() ou alimentarUsuariosIniciais()), execute elas só uma vez, ou remova se não precisar mais.
+Como fazer:
+Comente ou apague a chamada dessas funções se não quiser dados iniciais duplicados.
+7. Teste o cadastro e exibição
+O que fazer:
+Cadastre um filme e veja se aparece só uma vez na tela.
+Cadastre um usuário e veja se aparece só uma vez na lista.
+Como fazer:
+Use o painel de admin para cadastrar.
+Atualize a página e confira se está tudo certinho.
+8. Se aparecer duplicado, revise os passos acima
+Volte e veja se não deixou nenhuma função duplicada ou listener repetido.
+Confira se o HTML não tem dois containers para o mesmo tipo de dado.
+Resumo final
+Apague funções duplicadas.
+Use só uma função para cada ação (cadastrar, listar).
+Use só um container para mostrar cada tipo de dado.
+Remova listeners duplicados.
+Teste e revise.
+Se seguir esses passos, seu projeto vai ficar organizado, sem dados repetidos e fácil de manter!
+Se tiver dúvida em algum passo, pode perguntar que explico de novo!

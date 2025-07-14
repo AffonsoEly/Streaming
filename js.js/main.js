@@ -27,81 +27,8 @@ async function buscarTituloYoutube(idYoutube) {
     return data.items[0].snippet.title;
   }
   return "Título não encontrado";
-}async function login(event) {
-  event.preventDefault();
-  const user = document.getElementById("usuario").value.trim();
-  const pass = document.getElementById("senha").value.trim();
-  const dbUsuarios = new PouchDB('streaming_usuarios');
-  try {
-    const usuarioDoc = await dbUsuarios.get(user);
-    if (usuarioDoc.senha === pass) {
-      alert("Login bem-sucedido!");
-      if (usuarioDoc.tipo === "admin") {
-        window.location.href = "admin.html";
-      } else {
-        window.location.href = "Index.html";
-      }
-    } else {
-      alert("Senha incorreta.");
-    }
-  } catch (err) {
-    alert("Usuário não encontrado.");
-    console.error("Erro ao autenticar:", err);
-  }
-}async function login(event) {
-  event.preventDefault();
-  const user = document.getElementById("usuario").value.trim();
-  const pass = document.getElementById("senha").value.trim();
-  const dbUsuarios = new PouchDB('streaming_usuarios');
-  try {
-    const usuarioDoc = await dbUsuarios.get(user);
-    if (usuarioDoc.senha === pass) {
-      alert("Login bem-sucedido!");
-      if (usuarioDoc.tipo === "admin") {
-        window.location.href = "admin.html";
-      } else {
-        window.location.href = "Index.html";
-      }
-    } else {
-      alert("Senha incorreta.");
-    }
-  } catch (err) {
-    alert("Usuário não encontrado.");
-    console.error("Erro ao autenticar:", err);
-  }
-}
 
-//Esse bloco de imagens abaixo estava sendo utilizado como dados mockados para facilitar testes, eventualmente vou estar removendo ele, mas por enquanto vou deixar comentado para não quebrar o código.
-// Ele contém uma lista de vídeos iniciais com IDs e URLs do YouTube.
-/*
-const videosIniciais = [
-  {
-    _id: 'dQw4w9WgXcQ',
-    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-  },
-  {
-    _id: '3JZ_D3ELwOQ',
-    url: 'https://www.youtube.com/embed/3JZ_D3ELwOQ'
-  },
-  {
-    _id: 'L_jWHffIx5E',
-    url: 'https://www.youtube.com/embed/L_jWHffIx5E'
-  },
-  {
-    _id: 'tgbNymZ7vqY',
-    url: 'https://www.youtube.com/embed/tgbNymZ7vqY'
-  },
-  {
-    _id: 'e-ORhEE9VVg',
-    url: 'https://www.youtube.com/embed/e-ORhEE9VVg'
-  },
-  {
-    _id: 'kXYiU_JCYtU',
-    url: 'https://www.youtube.com/embed/kXYiU_JCYtU'
-  }
-];
-*/
-// Insere vídeos com título real do YouTube
+}
 
 //essa função alimenta o banco de dados com vídeos iniciais, buscando os títulos reais do YouTube, ela é responsável por mostrar os vídeos
 //no carrosel e os vídeos na parte de conteudo principal.
@@ -248,14 +175,15 @@ document.addEventListener("DOMContentLoaded", renderizarFilmes);
 //});
 // Função para autenticar usuário
 // Autentica o usuário com base no nome e senha fornecidos
+//função de login atualizado, seguir usando essa.
 async function login(event) {
   event.preventDefault();
-  const user = document.getElementById("usuario").value.trim();
-  const pass = document.getElementById("senha").value.trim();
+  const usuario = document.getElementById("usuario").value.trim();
+  const senha = document.getElementById("senha").value.trim();
   const dbUsuarios = new PouchDB('streaming_usuarios');
   try {
-    const usuarioDoc = await dbUsuarios.get(user);
-    if (usuarioDoc.senha === pass) {
+    const usuarioDoc = await dbUsuarios.get(usuario);
+    if (usuarioDoc.senha === senha) {
       alert("Login bem-sucedido!");
       if (usuarioDoc.tipo === "admin") {
         window.location.href = "admin.html";
@@ -311,7 +239,7 @@ function mostrarCadastro() {
   document.querySelector('form[onsubmit="return login(event)"]').style.display = 'none';
   document.getElementById('cadastroUsuario').style.display = 'block';
 }
-
+//usar somente essa função para cadastrar os usuários
   async function cadastrarUsuario(event) {
     event.preventDefault();
     const usuario = document.getElementById('novoUsuario').value.trim();
@@ -338,6 +266,8 @@ function mostrarCadastro() {
     }
     return false;
   }
+
+  //usar somente essa função para listar os usuários cadastrados
 async function listarUsuarios() {
   const dbUsuarios = new PouchDB('streaming_usuarios');
   const result = await dbUsuarios.allDocs({ include_docs: true });
@@ -346,7 +276,7 @@ async function listarUsuarios() {
     console.log(doc);
   });
 }
-
+//seguir usando somente essa função para cadastrar filmes.
 async function cadastrarFilme(event) {
   event.preventDefault();
   const titulo = document.getElementById('novoTitulo').value.trim();
@@ -379,7 +309,7 @@ async function cadastrarFilme(event) {
     alert('Erro ao cadastrar filme: ' + err.message);
   }
 }
-
+//Usar somente essa função para listar os filmes cadastrados
 async function listarFilmes() {
   const db = new PouchDB('streaming_filmes');
   const container = document.getElementById('listaFilmes');
