@@ -1,8 +1,12 @@
 const PouchDB = require('pouchdb');
-const db = new PouchDB('streaming_filmes');
+const dbFilmes = new PouchDB('streaming_filmes');
+const dbUsuarios = new PouchDB('streaming_usuarios');
 
-db.allDocs({ include_docs: true }).then(res => {
-  return Promise.all(res.rows.map(row => db.remove(row.doc)));
-}).then(() => {
-  console.log('Todos os vídeos removidos!');
+Promise.all([
+  dbFilmes.destroy(),
+  dbUsuarios.destroy()
+]).then(() => {
+  console.log('Bancos de dados excluídos com sucesso!');
+}).catch(err => {
+  console.error('Erro ao excluir bancos:', err);
 });

@@ -69,6 +69,9 @@ async function buscarTituloYoutube(idYoutube) {
   }
 }
 
+//Esse bloco de imagens abaixo estava sendo utilizado como dados mockados para facilitar testes, eventualmente vou estar removendo ele, mas por enquanto vou deixar comentado para não quebrar o código.
+// Ele contém uma lista de vídeos iniciais com IDs e URLs do YouTube.
+/*
 const videosIniciais = [
   {
     _id: 'dQw4w9WgXcQ',
@@ -95,12 +98,20 @@ const videosIniciais = [
     url: 'https://www.youtube.com/embed/kXYiU_JCYtU'
   }
 ];
-
+*/
 // Insere vídeos com título real do YouTube
+
+//essa função alimenta o banco de dados com vídeos iniciais, buscando os títulos reais do YouTube, ela é responsável por mostrar os vídeos
+//no carrosel e os vídeos na parte de conteudo principal.
+
 async function alimentarVideosIniciais() {
   for (const video of videosIniciais) {
     const idYoutube = video.url.split('/embed/')[1];
     video.titulo = await buscarTituloYoutube(idYoutube);
+    if (!video.titulo || video.titulo === "Título não encontrado") {
+      // Pula vídeos sem título válido
+      continue;
+    }
     try {
       const existente = await db.get(video._id);
       existente.titulo = video.titulo; // Atualiza o título
@@ -149,7 +160,7 @@ function filtrarVideos() {
   });
 }
 
-function getFilmesDestaque(qtd = 3) {
+/*function getFilmesDestaque(qtd = 3) {
   const copia = [...videosIniciais];
   const destaque = [];
   while (destaque.length < qtd && copia.length) {
@@ -157,16 +168,27 @@ function getFilmesDestaque(qtd = 3) {
     destaque.push(copia.splice(idx, 1)[0]);
   }
   return destaque;
-}
+}*/
 
-function renderizarDestaque() {
-  const destaque = getFilmesDestaque();
+async function renderizarDestaque() {
   const container = document.getElementById('destaqueFilmes');
   container.innerHTML = '';
+  const db = new PouchDB('streaming_filmes');
+  const result = await db.allDocs({ include_docs: true });
+  // Pegue até 3 filmes aleatórios do banco
+  const filmes = result.rows.map(r => r.doc);
+  if (filmes.length === 0) return; // Não mostra nada se não houver filmes
+  const destaque = [];
+  const copia = [...filmes];
+  while (destaque.length < 3 && copia.length) {
+    const idx = Math.floor(Math.random() * copia.length);
+    destaque.push(copia.splice(idx, 1)[0]);
+  }
   destaque.forEach((video, i) => {
+    const idYoutube = video.url.split('/embed/')[1];
     container.innerHTML += `
       <div class="carousel-item${i === 0 ? ' active' : ''}">
-        <img src="https://img.youtube.com/vi/${video._id}/0.jpg" class="d-block w-100" alt="${video.titulo}">
+        <img src="https://img.youtube.com/vi/${idYoutube}/0.jpg" class="d-block w-100" alt="${video.titulo}">
         <div class="carousel-caption d-none d-md-block">
           <h5>${video.titulo || 'Título não encontrado'}</h5>
           <p>${video.categoria || ''}</p>
@@ -175,7 +197,9 @@ function renderizarDestaque() {
     `;
   });
 }
-
+document.addEventListener("DOMContentLoaded", () => {
+  renderizarDestaque();
+});
 // Renderiza grid filtrado por categoria
 
 let categoriaAtual = 'Todos';
@@ -187,23 +211,39 @@ function filtrarCategoria(cat, el) {
   filtrarVideos();
 }
 
-function filtrarVideos() {
-  const filtro = document.getElementById("filtro").value.toLowerCase();
-  const cards = document.querySelectorAll(".video-card");
-  cards.forEach(card => {
-    const titulo = card.querySelector(".card-title").innerText.toLowerCase();
-    const categoria = card.querySelector(".card-text") ? card.querySelector(".card-text").innerText : '';
-    const matchTitulo = titulo.includes(filtro);
-    const matchCategoria = (categoriaAtual === 'Todos') || (categoria === categoriaAtual);
-    card.parentElement.style.display = (matchTitulo && matchCategoria) ? "block" : "none";
+function renderizarFilmes() {
+  const filtro = document.getElementById("filtro") ? document.getElementById("filtro").value.toLowerCase() : '';
+  const container = document.getElementById('videoList');
+  container.innerHTML = '';
+  const db = new PouchDB('streaming_filmes');
+  db.allDocs({ include_docs: true }).then(result => {
+    result.rows.forEach(({ doc }) => {
+      const matchCategoria = (categoriaAtual === 'Todos') || (doc.categoria === categoriaAtual);
+      const matchTitulo = !filtro || (doc.titulo && doc.titulo.toLowerCase().includes(filtro));
+      if (matchCategoria && matchTitulo) {
+        const idYoutube = doc.url.split('/embed/')[1];
+        container.innerHTML += `
+          <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 video-card bg-black text-white">
+              <img src="https://img.youtube.com/vi/${idYoutube}/0.jpg" class="card-img-top" alt="${doc.titulo}">
+              <div class="card-body text-center">
+                <h5 class="card-title">${doc.titulo}</h5>
+                <p class="card-text">${doc.categoria || ''}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    });
   });
 }
-
+// Renderiza os filmes ao carregar a página
+document.addEventListener("DOMContentLoaded", renderizarFilmes);
 // Inicialização
-document.addEventListener("DOMContentLoaded", () => {
-  renderizarDestaque();
-  filtrarCategoria('Todos');
-});
+//document.addEventListener("DOMContentLoaded", () => {
+  //renderizarDestaque();
+  //filtrarCategoria('Todos');
+//});
 // Função para autenticar usuário
 // Autentica o usuário com base no nome e senha fornecidos
 async function login(event) {
