@@ -1,3 +1,5 @@
+//Commit antes do ajuste em massa de informações duplicadas no código
+
 const db = new PouchDB('streaming_filmes');
 const apiKey = 'AIzaSyB_DLu_H3EjQC98-W6Fq3uFvX8PujwSAkA';
 // Dados iniciais (apenas para exemplo)
